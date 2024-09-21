@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block headtitle %}Cart{% endblock headtitle %}
+
+{% block content %}
+
+<style>
+    #main {
+        padding: 20px;
+    }
+    
+    #cartTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    #cartTable th, #cartTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    #cartTable th {
+        background-color: #f2f2f2;
+    }
+    
+    #cartSummary {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    
+    #updateCart, #proceedToCheckout {
+        padding: 10px 15px;
+        margin-right: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    #updateCart:hover, #proceedToCheckout:hover {
+        background-color: #45a049;
+    }
+</style>
+
+
+<div id="main">
+    <h1>Your Shopping Cart</h1>
+    <p>View your cart contents in the sidebar or manage your items below:</p>
+    
+    <table id="cartTable">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for items in cart_items %}
+            <tr>
+                <td>{{items.item}}</td>
+                <td>{{items.quantity}}</td>
+                <td>{{items.cost}}</td>
+                <td>
+                    <form method="POST" action="{% url 'delete_cart_item' items.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div id="cartSummary">
+        <h3>Cart Summary</h3>
+        <p>Total Items: <span id="totalItems">{{no_of_items}}</span></p>
+        <p>Total Price: Rs <span id="totalPrice">{{cost}}</span></p>
+        <a href=""><button id="updateCart">Update Cart</button></a>
+        {% if no_of_items != 0%}
+        <a href="{%url 'checkout' %}"><button id="proceedToCheckout">Proceed to Checkout</button></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
